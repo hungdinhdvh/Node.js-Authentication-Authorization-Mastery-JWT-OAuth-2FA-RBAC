@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from "../../lib/email";
 import { createAccessToken, createRefreshToken, verifyRefreshToken } from "../../lib/token";
 import crypto from "crypto";
+import { OAuth2Client } from "google-auth-library";
 
 function getAppUrl() {
     if (process.env.NODE_ENV === "production") {
@@ -14,6 +15,22 @@ function getAppUrl() {
         return process.env.APP_URL || "http://localhost:5001";
     }
 }
+
+function getGoogleClient() {
+    const clientId = process.env.GOOGLE_CLIENT_ID as string;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
+    const redirectUri = process.env.GOOGLE_REDIRECT_URI as string;
+
+    if(!clientId || !clientSecret || !redirectUri) {
+        throw new Error("Google OAuth credentials are not set in environment variables");
+    }
+    return new OAuth2Client({
+        clientId, 
+        clientSecret, 
+        redirectUri
+    });
+}
+
 export async function registerHandler(req: Request, res: Response) {
     try{
         const result = registerSchema.safeParse(req.body);
@@ -313,6 +330,110 @@ export async function resetPasswordHandler(req: Request, res: Response) {
 
     }catch (error) {
         console.error("Error in resetPasswordHandler:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export async function googleAuthStartHandler(req: Request, res: Response) {
+    try {
+        const client = getGoogleClient();
+
+        const url = client.generateAuthUrl({
+            access_type: 'offline',
+            prompt: 'consent',
+            scope: ['openid', 'email', 'profile'],
+        });
+
+        return res.status(200).json({ url });
+    }catch (error) {
+        console.error("Error in googleAuthStartHandler:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export async function googleAuthCallbackHandler(req: Request, res: Response) {
+    const code = req.query.code as string | undefined;
+
+    if(!code) {
+        return res.status(400).json({ message: "Authorization code is missing" });
+    }
+    try {
+        const client = getGoogleClient();
+
+        const { tokens } = await client.getToken(code);
+
+        if(!tokens.id_token) {
+            return res.status(400).json({ message: "ID token is missing in Google response" });
+        }
+        
+        // Verify the ID token and get user info
+        const ticket = await client.verifyIdToken({
+            idToken: tokens.id_token,
+            audience: process.env.GOOGLE_CLIENT_ID as string,
+        });
+        const payload = ticket.getPayload();
+
+        const email = payload?.email;
+        const emailVerified = payload?.email_verified;
+
+        if(!email || !emailVerified) {
+            return res.status(400).json({ message: "Email not found or not verified in Google account" });
+        }
+
+        const nomalizedEmail = email.toLowerCase().trim();
+
+        let user = await User.findOne({ email: nomalizedEmail });
+
+        if(!user) {
+            const randomPassword = crypto.randomBytes(16).toString("hex");
+            const passwordHash = await hashPassword(randomPassword);
+
+            user = new User({
+                email: nomalizedEmail,
+                password: passwordHash,
+                name: payload?.name || "Google User",
+                role: 'user',
+                isEmailVerified: true,
+                twoFactorEnabled: false,
+            });
+
+            await user.save();
+        }else {
+            if(!user.isEmailVerified) {
+                user.isEmailVerified = true;
+                await user.save();
+            }
+        }
+
+        const accessToken = createAccessToken(user._id.toString(), user.role as "user" | "admin", user.tokenVersion);
+        const refreshToken = createRefreshToken(user._id.toString(), user.tokenVersion);
+
+        const isProd = process.env.NODE_ENV === "production";
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: isProd,
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days      
+            });
+
+        return res.status(200).json({
+            message: "Login with Google successful",
+            accessToken,
+            user: {
+                id: user._id,
+                email: user.email,
+                name: user.name,
+                role: user.role,
+                isEmailVerified: user.isEmailVerified,
+                twoFactorEnabled: user.twoFactorEnabled
+            }
+        });
+
+
+
+    }catch (error) {
+        console.error("Error in googleAuthCallbackHandler:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }

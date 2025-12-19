@@ -75,4 +75,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ0ZGY1Y
 ### List Users (Admin Only)
 GET http://localhost:5001/admin/users
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ0ZmFiNTNmMjYyZGMyMzM0OGI4OTYiLCJyb2xlIjoiYWRtaW4iLCJ0b2tlblZlcnNpb24iOjAsImlhdCI6MTc2NjEyODUwOCwiZXhwIjoxNzY2MTMwMzA4fQ.Bp1N0FRp60zG3VCZu05UpiGonmXOGmoejGddBrOmSk0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ0ZmFiNTNmMjYyZGMyMzM0OGI4OTYiLCJyb2xlIjoiYWRtaW4iLCJ0b2tlblZlcnNpb24iOjAsImlhdCI6MTc2NjEyODUwOCwiZXhwIjoxNzY2MTMwMzA4fQ.Bp1N0FRp60zG3VCZu05UpiGonmXOGmoejGddBrOmSk0 
+
+### auth google
+GET http://localhost:5001/auth/google
+Content-Type: application/json
