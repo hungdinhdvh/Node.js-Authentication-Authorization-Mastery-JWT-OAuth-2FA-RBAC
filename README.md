@@ -18,3 +18,6 @@ EMAIL_FROM="example@gmail.com"
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 GOOGLE_REDIRECT_URI=http://localhost:5000/auth/google/callback
+
+
+npx ts-node scripts/totp-qr.ts "otpauth://totp/NodeAdvancedAuthApp:admin%40gmail.com?secret=GMNAMSIWBJLHW4ZY&period=30&digits=6&algorithm=SHA1&issuer=NodeAdvancedAuthApp"

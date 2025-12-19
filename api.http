@@ -32,7 +32,8 @@ Content-Type: application/json
 
 {
   "email": "admin@gmail.com",
-  "password": "admin123"
+  "password": "admin123",
+  "twoFactorCode": "133825"
 }
 
 ### Verify Email
@@ -80,3 +81,22 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ0ZmFiN
 ### auth google
 GET http://localhost:5001/auth/google
 Content-Type: application/json
+
+
+### auth google callback
+GET http://localhost:5001/auth/google/callback
+Content-Type: application/json
+
+### 2FA setup
+POST http://localhost:5001/auth/2fa/setup
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ0ZmFiNTNmMjYyZGMyMzM0OGI4OTYiLCJyb2xlIjoiYWRtaW4iLCJ0b2tlblZlcnNpb24iOjAsImlhdCI6MTc2NjEzMzU1NywiZXhwIjoxNzY2MTM1MzU3fQ.qUF0PxUMdbp8oI0MOPICEtWeyGYNSbw0IVyfBMEkD4Q
+
+### 2FA verify
+POST http://localhost:5001/auth/2fa/verify
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ0ZmFiNTNmMjYyZGMyMzM0OGI4OTYiLCJyb2xlIjoiYWRtaW4iLCJ0b2tlblZlcnNpb24iOjAsImlhdCI6MTc2NjEzMzU1NywiZXhwIjoxNzY2MTM1MzU3fQ.qUF0PxUMdbp8oI0MOPICEtWeyGYNSbw0IVyfBMEkD4Q
+
+{
+  "code": "644091"
+}
