@@ -1,0 +1,78 @@
+### Register User
+POST http://localhost:5001/auth/register
+Content-Type: application/json
+
+{
+  "name": "User 2",
+  "email": "user2@gmail.com",
+  "password": "user123"
+}
+### Register admin
+POST http://localhost:5001/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin",
+  "email": "admin@gmail.com",
+  "password": "admin123"
+}
+
+### Login User
+POST http://localhost:5001/auth/login
+Content-Type: application/json
+
+{
+  "email": "user2@gmail.com",
+  "password": "user123"
+}
+
+### Login Admin
+POST http://localhost:5001/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin123"
+}
+
+### Verify Email
+GET http://localhost:5001/auth/verify-email?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ0ZGY1Yzc0YzJkYzhhYWNkZWM2YTEiLCJpYXQiOjE3NjYxMjEzMDgsImV4cCI6MTc2NjIwNzcwOH0.aNzWYnngIu7Q7tWteiCKUICNelH-XYi4ZJCyey7_yWQ
+Content-Type: application/json
+
+
+### Refresh Token
+POST http://localhost:5001/auth/refresh-token
+Content-Type: application/json
+
+### Logout User
+POST http://localhost:5001/auth/logout
+Content-Type: application/json
+
+### Forgot Password
+POST http://localhost:5001/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "user1@gmail.com"
+}
+
+### Reset Password
+POST http://localhost:5001/auth/reset-password?token=6fefd39744e0824f651d1977636ed01a656d97b761c4f2f1928a449c91d2a9dd&email=manhhung.dvh%40gmail.com
+Content-Type: application/json
+
+{
+  "token" : "6fefd39744e0824f651d1977636ed01a656d97b761c4f2f1928a449c91d2a9dd",
+  "email": "user1@gmail.com",
+  "password": "newpassword123"
+}
+
+### Get User Profile
+GET http://localhost:5001/user/profile
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ0ZGY1Yzc0YzJkYzhhYWNkZWM2YTEiLCJyb2xlIjoidXNlciIsInRva2VuVmVyc2lvbiI6MCwiaWF0IjoxNzY2MTI2ODE5LCJleHAiOjE3NjYxMjg2MTl9.rOGV83gyHWVqPAutn954dciwZulRsVIryJTlNuOM5tw
+
+
+### List Users (Admin Only)
+GET http://localhost:5001/admin/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OTQ0ZmFiNTNmMjYyZGMyMzM0OGI4OTYiLCJyb2xlIjoiYWRtaW4iLCJ0b2tlblZlcnNpb24iOjAsImlhdCI6MTc2NjEyODUwOCwiZXhwIjoxNzY2MTMwMzA4fQ.Bp1N0FRp60zG3VCZu05UpiGonmXOGmoejGddBrOmSk0
