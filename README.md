@@ -1,3 +1,5 @@
+Node.js Authentication & Authorization Mastery | JWT, OAuth, 2FA, RBAC
+
 NODE_ENV=development
 APP_URL=http://localhost:5001
 PORT=5001
